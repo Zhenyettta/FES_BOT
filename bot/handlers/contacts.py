@@ -12,7 +12,7 @@ CONTACTS_CATEGORY, DEAN_CONTACTS, METHODISTS_CATEGORY, SVK_OR_HLIB_CONTACTS, DEP
 
 
 async def contacts(update: Update, context: CallbackContext) -> int:
-    buttons = [['Контакти деканату', 'Контакти методистів кафедр'], ['Контакти СВК', 'Відділ у справах студентства']]
+    buttons = [['Контакти деканату', 'Контакти кафедр'], ['Контакти СВК', 'Відділ у справах студентства']]
     return await generic_reply(update, 'Оберіть категорію:', buttons, CONTACTS_CATEGORY, back_button=True)
 
 
@@ -22,7 +22,7 @@ async def dean(update: Update, context: CallbackContext) -> int:
 
 
 async def methodists(update: Update, context: CallbackContext) -> int:
-    buttons = [['Фінанси', 'ЕТ', 'МУБ']]
+    buttons = [['Фінанси', 'Економ теорія', 'МУБ']]
     return await generic_reply(update, 'Оберіть кафедру:', buttons, METHODISTS_CATEGORY, back_button=True,
                                home_button=True)
 
@@ -58,14 +58,14 @@ contacts_handler = ConversationHandler(
     states={
         CONTACTS_CATEGORY: [
             MessageHandler(filters.Regex('Контакти деканату'), dean),
-            MessageHandler(filters.Regex('Контакти методистів кафедр'), methodists),
+            MessageHandler(filters.Regex('Контакти кафедр'), methodists),
             MessageHandler(filters.Regex('Контакти СВК'), svk),
             MessageHandler(filters.Regex('Відділ у справах студентства'), hlib),
             MessageHandler(filters.Regex(BACK), go_home),
         ],
         METHODISTS_CATEGORY: [
             MessageHandler(filters.Regex('Фінанси'), finance),
-            MessageHandler(filters.Regex('ЕТ'), et),
+            MessageHandler(filters.Regex('Економ теорія'), et),
             MessageHandler(filters.Regex('МУБ'), myb),
             MessageHandler(filters.Regex(BACK), contacts),
             MessageHandler(filters.Regex(HOME), go_home),

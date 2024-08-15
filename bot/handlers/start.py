@@ -5,7 +5,7 @@ from bot.utils.fields import START_TEXT
 
 reply_keyboard = [['Контакти', 'Загальна інформація'],
                   ['Навчальний процес', 'Мобільність'],
-                  ['Неформальна освіта']]
+                  ['Неформальна освіта', 'Корисні посилання']]
 keyboard_markup = ReplyKeyboardMarkup(reply_keyboard, resize_keyboard=True)
 
 

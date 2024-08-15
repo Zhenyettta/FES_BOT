@@ -7,15 +7,16 @@ from bot.utils.utils import generic_reply, go_home, unlucky
 
 BACK = 'Назад'
 HOME = 'На головну'
-MOBILITY_CATEGORY, MOBILITY_GENERAL, MOBILITY_PROGRAMS, SELF_INITIATED_MOBILITY, DEPARTURE_PROCEDURE, RESULTS_PROCEDURE, FAILED_MOBILITY = range(
-    7)
+MOBILITY_CATEGORY, MOBILITY_GENERAL, MOBILITY_PROGRAMS, SELF_INITIATED_MOBILITY, DEPARTURE_PROCEDURE, RESULTS_PROCEDURE, FAILED_MOBILITY, APPROVAL = range(
+    8)
 
 
 # Handlers for "Мобільність"
 async def mobility(update: Update, context: CallbackContext) -> int:
     buttons = [['Загальна інформація мобільність', 'Програми мобільності'],
                ['Самоініційована мобільність', 'Порядок оформлення від’їзду'],
-               ['Порядок оформлення результатів', 'Незарах на мобільності']]
+               ['Порядок оформлення результатів', 'Незарах на мобільності'],
+               ['Погодження']]
     return await generic_reply(update, 'Оберіть категорію:', buttons, MOBILITY_CATEGORY, back_button=True)
 
 
@@ -33,6 +34,24 @@ async def mobility_programs(update: Update, context: CallbackContext) -> int:
         "Для перегляду інформації про програми мобільності, перейдіть за [посиланням](https://dfc.ukma.edu.ua/going-from-naukma/why-international-experience)."
     )
     return await generic_reply(update, text, [], MOBILITY_PROGRAMS, back_button=True, home_button=True,
+                               back_home_row=True,
+                               parse_mode=ParseMode.MARKDOWN)
+
+async def approval(update: Update, context: CallbackContext) -> int:
+    text = (
+        """Відповідальні особи на кафедрах:
+
+1. Кафедра ЕТ​– Бажал Юрій Миколайович, bazhal@ukma.edu.ua
+
+2. Кафедра фінансів:
+– для бакалаврів – Слав’юк Наталія Ростиславівна,  n.slaviuk@ukma.edu.ua
+– для магістрів ​–  Прімєрова Олена Костянтинівна,  o.primierova@ukma.edu.ua
+
+3. Кафедра МУБ – Пічик Катерина Валеріївна, pichykkv@ukma.edu.ua
+ 
+ВАЖЛИВО! Якщо дисципліна викладається іншою кафедрою/факультетом її потрібно погодити саме на цій кафедрі! Наприклад, курс «Англійська мова»."""
+    )
+    return await generic_reply(update, text, [], APPROVAL, back_button=True, home_button=True,
                                back_home_row=True,
                                parse_mode=ParseMode.MARKDOWN)
 
@@ -116,6 +135,7 @@ mobility_handler = ConversationHandler(
             MessageHandler(filters.Regex('Порядок оформлення від’їзду'), departure_procedure),
             MessageHandler(filters.Regex('Порядок оформлення результатів'), results_procedure),
             MessageHandler(filters.Regex('Незарах на мобільності'), failed_mobility),
+            MessageHandler(filters.Regex('Погодження'), approval),
             MessageHandler(filters.Regex(BACK), go_home),
         ],
         MOBILITY_GENERAL: [
@@ -142,6 +162,10 @@ mobility_handler = ConversationHandler(
             MessageHandler(filters.Regex(BACK), mobility),
             MessageHandler(filters.Regex(HOME), go_home),
         ],
+        APPROVAL: [
+            MessageHandler(filters.Regex(BACK), mobility),
+            MessageHandler(filters.Regex(HOME), go_home),
+        ]
     },
     fallbacks=[CommandHandler('reset', fresh_start), CommandHandler('start', fresh_start),
                MessageHandler(filters.TEXT, unlucky)],
