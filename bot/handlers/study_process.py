@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from telegram import Update
 from telegram.constants import ParseMode
 from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, MessageHandler, filters
@@ -129,14 +131,36 @@ async def academic_leave(update: Update, context: CallbackContext) -> int:
 
 
 async def exclusion(update: Update, context: CallbackContext) -> int:
+    current_dir = Path(__file__).parent
+    file_path = current_dir / '..' / 'utils' / 'files' / 'ЗАЯВА-відрахування-ЗРАЗОК.docx'
+    file_path = file_path.resolve()
     return await generic_reply(update,
-                               """https://www.ukma.edu.ua/index.php/about-us/sogodennya/dokumenty-naukma/doc_download/3435-polozhennia-pro-vidrakhuvannia-perevedennia-nadannia-akademichnoi-vidpustky-studentam-v-naukma""",
-                               [], EXCLUSION, back_button=True, home_button=True, back_home_row=True)
+                               """Підстави для відрахування:
+
+- невиконання індивідуального навчального плану і наявність трьох і більше академічних заборгованостей за результатами заліково-іспитової сесії для студентів контрактної форми навчання), або наявність однієї заборгованості для студентів бюджетної форми навчання (у випадку, коли студент бюджетної форми навчання не пише заву про переведення його на контрактну форму навчання)
+
+- за власним бажанням (заява направляється в деканат, спеціалістам деканату), ознайомитись з шаблоном заяви можна в прикріпленому файлі.
+
+- за несплату за навчання
+
+- за порушення Статуту НаУКМА, Правил внутрішнього розпорядку НаУКМА
+
+- за умови, якщо студент протягом 10 днів від початку нового навчального року не зареєструвався в деканаті""",
+                               [], EXCLUSION, file_path=file_path, back_button=True, home_button=True, back_home_row=True)
 
 
 async def renewal(update: Update, context: CallbackContext) -> int:
+    current_dir = Path(__file__).parent
+    file_path = current_dir / '..' / 'utils' / 'files' / 'ЗАЯВА-відрахування-ЗРАЗОК.docx'
+    file_path = file_path.resolve()
     return await generic_reply(update,
-                               """https://www.ukma.edu.ua/index.php/about-us/sogodennya/dokumenty-naukma/doc_download/3435-polozhennia-pro-vidrakhuvannia-perevedennia-nadannia-akademichnoi-vidpustky-studentam-v-naukma""",
+                               """- оформлення слухачем, на підставі написання заяви в деканаті ФЕН (шаблон заяви в прикріпленому файлі)
+
+- оплата дисциплін за якими є заборгованість і які потребують переслуховування
+
+- переслуховування дисциплін та отримання за ними позитивних оцінок
+
+- поновлення в якості студента НаУКМА і продовження навчання""",
                                [], RENEWAL, back_button=True, home_button=True, back_home_row=True)
 
 
