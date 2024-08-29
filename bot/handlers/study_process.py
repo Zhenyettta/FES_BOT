@@ -89,7 +89,7 @@ async def individual_plan(update: Update, context: CallbackContext) -> int:
 
 -  На наступний рік навчання студента переводять лише за умови успішного виконання індивідуального навчального плану, коли академічних заборгованостей немає або вони є в кількості не більше двох.    
     """, [], INDIVIDUAL_PLAN,
-                               back_button=True, home_button=True)
+                               back_button=True, home_button=True, back_home_row=True)
 
 
 async def what_is_it(update: Update, context: CallbackContext) -> int:
@@ -126,7 +126,7 @@ async def expulsion(update: Update, context: CallbackContext) -> int:
 async def useful_info(update: Update, context: CallbackContext) -> int:
     buttons = [['Академічна відпустка', 'Відрахування'], ['Поновлення']]
     return await generic_reply(update, 'Оберіть корисну інформацію:', buttons, USEFUL_INFO, home_button=True,
-                               back_button=True, back_home_row=True)
+                               back_button=True)
 
 
 async def academic_leave(update: Update, context: CallbackContext) -> int:
