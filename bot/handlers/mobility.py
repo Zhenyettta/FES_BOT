@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 
 from telegram import Update, InputFile
 from telegram.constants import ParseMode
@@ -128,8 +129,10 @@ async def failed_mobility(update: Update, context: CallbackContext) -> int:
 
 async def action_procedure(update: Update, context: CallbackContext) -> int:
     text = "Для ознайомленням з порядком дій при оформленні мобільності, відкрийте вкладений файл"
-    file_path = os.path.join('bot/utils/files/АЛГОРИТМ ДІЙ при оформлені студента ФЕН на академічну мобільність-2024.pdf')
-    return await generic_reply(update, text, [], file_path=file_path, state = MOBILITY_GENERAL, back_button=True, home_button=True, back_home_row=True)
+    current_dir = Path(__file__).parent
+    file_path = current_dir / '..' / 'utils' / 'files' / 'АЛГОРИТМ ДІЙ при оформлені студента ФЕН на академічну мобільність-2024.pdf'
+    file_path = file_path.resolve()
+    return await generic_reply(update, text, [],  state = MOBILITY_GENERAL, file_path=file_path, back_button=True, home_button=True, back_home_row=True)
 
 
 mobility_handler = ConversationHandler(
@@ -140,6 +143,7 @@ mobility_handler = ConversationHandler(
             MessageHandler(filters.Regex('Програми мобільності'), mobility_programs),
             MessageHandler(filters.Regex('Самоініційована мобільність'), self_initiated_mobility),
             MessageHandler(filters.Regex('Порядок оформлення від’їзду'), departure_procedure),
+            MessageHandler(filters.Regex('Порядок дій при оформленні'), action_procedure),
             MessageHandler(filters.Regex('Порядок оформлення результатів'), results_procedure),
             MessageHandler(filters.Regex('Незарах на мобільності'), failed_mobility),
             MessageHandler(filters.Regex('Погодження'), approval),
