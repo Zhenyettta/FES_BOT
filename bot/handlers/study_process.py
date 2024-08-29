@@ -247,12 +247,12 @@ learning_process_handler = ConversationHandler(
             MessageHandler(filters.Regex(HOME), go_home),
         ],
         USEFUL_INFO: [
-
             MessageHandler(filters.Regex('Академічна відпустка'), academic_leave),
             MessageHandler(filters.Regex('Відрахування'), exclusion),
             MessageHandler(filters.Regex('Поновлення'), renewal),
             MessageHandler(filters.Regex('Академічна заборгованість'), popular_statements),
-            MessageHandler(filters.Regex(BACK), go_home),
+            MessageHandler(filters.Regex(BACK), useful_info),
+            MessageHandler(filters.Regex(HOME), go_home),
         ],
 
         ACADEMIC_LEAVE: [
