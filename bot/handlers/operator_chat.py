@@ -45,7 +45,7 @@ async def send_to_operator(update: Update, context: CallbackContext) -> int:
     user = update.message.from_user
     user_id = user.id
     if user_id not in user_nicknames:
-        user_nicknames[user_id] = f'User_{nickname_counter}'
+        user_nicknames[user_id] = f'User_{nickname_counter}' + '\n'
         nickname_counter += 1
     username = user_nicknames[user_id]
 
