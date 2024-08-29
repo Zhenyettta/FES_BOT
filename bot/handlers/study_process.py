@@ -82,7 +82,7 @@ async def department_responsibilities(update: Update, context: CallbackContext) 
 
 async def individual_plan(update: Update, context: CallbackContext) -> int:
     return await generic_reply(update, """-  Студент самостійно складає індивідуальний навчальний план.
-    
+
 -  Індивідуальний навчальний план складається у двох примірниках. Один з примірників, після узгодження із спеціалістом деканату факультету, залишається у спеціаліста, другий примірник – у студента. Свій примірник індивідуального навчального плану студенту потрібно зберігати до завершення навчання.
 
 -  Щороку в другій половині березня кожен студент складає план опанування начальних дисциплін на наступний рік (нормативні та вибіркові курси). Всі дисципліни, включені студентом до індивідуального навчального плану (в т.ч. з урахуванням корекцій, що проводять на початку кожного семестру) є обов’язковими для вивчення.
@@ -124,7 +124,7 @@ async def expulsion(update: Update, context: CallbackContext) -> int:
 
 # Useful Information Handlers
 async def useful_info(update: Update, context: CallbackContext) -> int:
-    buttons = [['Академічна відпустка', 'Відрахування'], ['Поновлення']]
+    buttons = [['Академічна відпустка', 'Відрахування'], ['Поновлення', 'Академічна заборгованість']]
     return await generic_reply(update, 'Оберіть корисну інформацію:', buttons, USEFUL_INFO, home_button=True,
                                back_button=True)
 
@@ -164,7 +164,8 @@ async def exclusion(update: Update, context: CallbackContext) -> int:
 - за порушення Статуту НаУКМА, Правил внутрішнього розпорядку НаУКМА
 
 - за умови, якщо студент протягом 10 днів від початку нового навчального року не зареєструвався в деканаті""",
-                               [], EXCLUSION, file_path=file_path, back_button=True, home_button=True, back_home_row=True)
+                               [], EXCLUSION, file_path=file_path, back_button=True, home_button=True,
+                               back_home_row=True)
 
 
 async def renewal(update: Update, context: CallbackContext) -> int:
@@ -183,8 +184,23 @@ async def renewal(update: Update, context: CallbackContext) -> int:
 
 
 async def popular_statements(update: Update, context: CallbackContext) -> int:
-    return await generic_reply(update, 'Зразки популярних заяв:', [], RENEWAL, back_button=True,
-                               home_button=True, back_home_row=True)
+    current_dir = Path(__file__).parent
+    file_path = current_dir / '..' / 'utils' / 'files' / 'ЗАЯВА-переслуховування курсу ЗРАЗОК.docx'
+    file_path = file_path.resolve()
+    return await generic_reply(update,
+                               """-  Студент, який за результатами роботи в семестрі та під час заліково-іспитової сесії отримав незадовільну оцінку з дисципліни, має академічну заборгованість
+
+-  Академічну заборгованість потрібно ліквідувати до початку наступного семестру.
+
+-  Перескладати екзамен можна не більше двох разів із кожної дисципліни, причому друге перескладання здійснюється перед комісією.
+
+-  Перескладання заліку чи екзамену для підвищення оцінки – не передбачено.
+
+-  Якщо академічна заборгованість не ліквідована, - нормативну дисципліну треба прослухати знову в наступному навчальному році, а незадовільну оцінку з вибіркової дисципліни можна компенсувати позитивною оцінкою прослухавши іншу вибіркову дисципліну, обрану на заміну нескладеної вибіркової дисципліни.
+
+-  Повторне вивчення дисципліни для ліквідації академічної заборгованості відбувається за відповідну плату. Оформлення відбувається на основі написання студентом заяви в деканаті, візування заяви деканом та здійснення оплати з боку студента.""",
+                               [], RENEWAL, file_path=file_path, back_button=True, home_button=True, back_home_row=True, parse_mode=ParseMode.MARKDOWN)
+
 
 
 # Conversation Handler
@@ -235,6 +251,7 @@ learning_process_handler = ConversationHandler(
             MessageHandler(filters.Regex('Академічна відпустка'), academic_leave),
             MessageHandler(filters.Regex('Відрахування'), exclusion),
             MessageHandler(filters.Regex('Поновлення'), renewal),
+            MessageHandler(filters.Regex('Академічна заборгованість'), popular_statements),
             MessageHandler(filters.Regex(BACK), go_home),
         ],
 
