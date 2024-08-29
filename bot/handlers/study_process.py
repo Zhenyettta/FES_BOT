@@ -8,10 +8,9 @@ from bot.utils.utils import generic_reply, go_home, unlucky
 
 BACK = 'Назад'
 HOME = 'На головну'
-LEARNING_PROCESS, USEFUL_INFO, SCHEDULES = range(3)
+LEARNING_PROCESS, USEFUL_INFO = range(2)
 DEAN_RESPONSIBILITIES, DEPUTY_DEAN_RESPONSIBILITIES, DEPARTMENT_RESPONSIBILITIES, INDIVIDUAL_PLAN = range(3, 7)
 WHAT_IS_IT, WHAT_TO_DO, EXPULSION = range(7, 10)
-CLASS_SCHEDULE, EXAM_SCHEDULE = range(10, 12)
 ACADEMIC_LEAVE, EXCLUSION, RENEWAL = range(12, 15)
 
 
@@ -117,29 +116,9 @@ async def expulsion(update: Update, context: CallbackContext) -> int:
 
 # Useful Information Handlers
 async def useful_info(update: Update, context: CallbackContext) -> int:
-    buttons = [['Розклади', 'Академічна відпустка'], ['Відрахування', 'Поновлення'], ['Зразки популярних заяв']]
+    buttons = [['Академічна відпустка', 'Відрахування'], ['Поновлення', 'Зразки популярних заяв']]
     return await generic_reply(update, 'Оберіть корисну інформацію:', buttons, USEFUL_INFO, home_button=True,
                                back_button=True)
-
-
-async def schedules(update: Update, context: CallbackContext) -> int:
-    buttons = [['Розклад занять', 'Розклад сесії']]
-    return await generic_reply(update, 'Оберіть розклад:', buttons, SCHEDULES, home_button=True,
-                               back_button=True)
-
-
-async def class_schedule(update: Update, context: CallbackContext) -> int:
-    return await generic_reply(update, 'Розклад занять: [посилання](https://my.ukma.edu.ua/schedule)',[],
-                               CLASS_SCHEDULE, back_button=True, home_button=True, parse_mode=ParseMode.MARKDOWN,
-                               back_home_row=True)
-
-
-async def exam_schedule(update: Update, context: CallbackContext) -> int:
-    return await generic_reply(update,
-                               'Розклад сесії: [посилання](https://www.ukma.edu.ua/index.php/about-us/sogodennya/dokumenty-naukma/cat_view/1-dokumenty-naukma/30-rizne)',
-                               [], EXAM_SCHEDULE,
-                               back_button=True, home_button=True, parse_mode=ParseMode.MARKDOWN,
-                               back_home_row=True)
 
 
 async def academic_leave(update: Update, context: CallbackContext) -> int:
@@ -210,27 +189,14 @@ learning_process_handler = ConversationHandler(
             MessageHandler(filters.Regex(HOME), go_home),
         ],
         USEFUL_INFO: [
-            MessageHandler(filters.Regex('Розклади'), schedules),
+
             MessageHandler(filters.Regex('Академічна відпустка'), academic_leave),
             MessageHandler(filters.Regex('Відрахування'), exclusion),
             MessageHandler(filters.Regex('Поновлення'), renewal),
             MessageHandler(filters.Regex('Зразки популярних заяв'), popular_statements),
             MessageHandler(filters.Regex(BACK), go_home),
         ],
-        SCHEDULES: [
-            MessageHandler(filters.Regex('Розклад занять'), class_schedule),
-            MessageHandler(filters.Regex('Розклад сесії'), exam_schedule),
-            MessageHandler(filters.Regex(BACK), useful_info),
-            MessageHandler(filters.Regex(HOME), go_home),
-        ],
-        CLASS_SCHEDULE: [
-            MessageHandler(filters.Regex(BACK), schedules),
-            MessageHandler(filters.Regex(HOME), go_home),
-        ],
-        EXAM_SCHEDULE: [
-            MessageHandler(filters.Regex(BACK), schedules),
-            MessageHandler(filters.Regex(HOME), go_home),
-        ],
+
         ACADEMIC_LEAVE: [
             MessageHandler(filters.Regex(BACK), useful_info),
             MessageHandler(filters.Regex(HOME), go_home),

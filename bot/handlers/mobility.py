@@ -1,4 +1,6 @@
-from telegram import Update
+import os
+
+from telegram import Update, InputFile
 from telegram.constants import ParseMode
 from telegram.ext import CallbackContext, CommandHandler, ConversationHandler, MessageHandler, filters
 
@@ -13,10 +15,10 @@ MOBILITY_CATEGORY, MOBILITY_GENERAL, MOBILITY_PROGRAMS, SELF_INITIATED_MOBILITY,
 
 # Handlers for "Мобільність"
 async def mobility(update: Update, context: CallbackContext) -> int:
-    buttons = [['Загальна інформація мобільність', 'Програми мобільності'],
-               ['Самоініційована мобільність', 'Порядок оформлення від’їзду'],
-               ['Порядок оформлення результатів', 'Незарах на мобільності'],
-               ['Погодження']]
+    buttons = [['Загальна інформація мобільність', 'Порядок дій при оформленні'],
+               ['Самоініційована мобільність','Програми мобільності'],
+               ['Порядок оформлення результатів','Порядок оформлення від’їзду'],
+               ['Погодження', 'Незарах на мобільності']]
     return await generic_reply(update, 'Оберіть категорію:', buttons, MOBILITY_CATEGORY, back_button=True)
 
 
@@ -123,6 +125,11 @@ async def failed_mobility(update: Update, context: CallbackContext) -> int:
     )
     return await generic_reply(update, text, [], FAILED_MOBILITY, back_button=True, home_button=True, back_home_row=True,
                                parse_mode=ParseMode.MARKDOWN)
+
+async def action_procedure(update: Update, context: CallbackContext) -> int:
+    text = "Для ознайомленням з порядком дій при оформленні мобільності, відкрийте вкладений файл"
+    file_path = os.path.join('bot/utils/files/АЛГОРИТМ ДІЙ при оформлені студента ФЕН на академічну мобільність-2024.pdf')
+    return await generic_reply(update, text, [], file_path=file_path, state = MOBILITY_GENERAL, back_button=True, home_button=True, back_home_row=True)
 
 
 mobility_handler = ConversationHandler(

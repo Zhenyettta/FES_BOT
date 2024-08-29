@@ -2,6 +2,8 @@ import logging
 from pathlib import Path
 
 from dotenv import load_dotenv
+from telegram import Update
+from telegram.ext import CallbackContext
 
 
 def load_env():
@@ -14,3 +16,8 @@ logging.basicConfig(filename='Logs.log',
                     level=logging.INFO,
                     format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+
+async def chat_id(update: Update, context: CallbackContext):
+    chat_id = update.effective_chat.id
+    await context.bot.send_message(chat_id=chat_id, text=f"Chat ID: {chat_id}")
