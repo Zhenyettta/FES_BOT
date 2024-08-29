@@ -81,8 +81,14 @@ async def department_responsibilities(update: Update, context: CallbackContext) 
 
 
 async def individual_plan(update: Update, context: CallbackContext) -> int:
-    buttons = [['Що це?', 'Що робити, якщо курс не відбувся?'], ['Виписування з курсів']]
-    return await generic_reply(update, 'Індивідуальний навчальний план: оберіть питання:', buttons, INDIVIDUAL_PLAN,
+    return await generic_reply(update, """-  Студент самостійно складає індивідуальний навчальний план.
+    
+-  Індивідуальний навчальний план складається у двох примірниках. Один з примірників, після узгодження із спеціалістом деканату факультету, залишається у спеціаліста, другий примірник – у студента. Свій примірник індивідуального навчального плану студенту потрібно зберігати до завершення навчання.
+
+-  Щороку в другій половині березня кожен студент складає план опанування начальних дисциплін на наступний рік (нормативні та вибіркові курси). Всі дисципліни, включені студентом до індивідуального навчального плану (в т.ч. з урахуванням корекцій, що проводять на початку кожного семестру) є обов’язковими для вивчення.
+
+-  На наступний рік навчання студента переводять лише за умови успішного виконання індивідуального навчального плану, коли академічних заборгованостей немає або вони є в кількості не більше двох.    
+    """, [], INDIVIDUAL_PLAN,
                                back_button=True, home_button=True)
 
 
@@ -120,7 +126,7 @@ async def expulsion(update: Update, context: CallbackContext) -> int:
 async def useful_info(update: Update, context: CallbackContext) -> int:
     buttons = [['Академічна відпустка', 'Відрахування'], ['Поновлення']]
     return await generic_reply(update, 'Оберіть корисну інформацію:', buttons, USEFUL_INFO, home_button=True,
-                               back_button=True)
+                               back_button=True, back_home_row=True)
 
 
 async def academic_leave(update: Update, context: CallbackContext) -> int:
