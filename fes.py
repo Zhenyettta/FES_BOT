@@ -12,6 +12,7 @@ from bot.handlers.general import general_info_handler
 from bot.handlers.informal import informal_education_handler
 from bot.handlers.mobility import mobility_handler
 from bot.handlers.operator_chat import clear_pending_replies, operator_chat_handler, reply_handler
+from bot.handlers.schedules import schedules_handler
 from bot.handlers.start import start_handler
 from bot.handlers.study_process import learning_process_handler
 from bot.handlers.usefull_links import useful_links_handler
@@ -29,6 +30,7 @@ if __name__ == '__main__':
     application.add_handler(mobility_handler)
     application.add_handler(general_info_handler)
     application.add_handler(informal_education_handler)
+    application.add_handler(schedules_handler)
     application.add_handler(learning_process_handler)
     application.add_handler(useful_links_handler)
     application.add_handler(operator_chat_handler)
