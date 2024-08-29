@@ -118,16 +118,28 @@ async def expulsion(update: Update, context: CallbackContext) -> int:
 
 # Useful Information Handlers
 async def useful_info(update: Update, context: CallbackContext) -> int:
-    buttons = [['Академічна відпустка', 'Відрахування'], ['Поновлення', 'Зразки популярних заяв']]
+    buttons = [['Академічна відпустка', 'Відрахування'], ['Поновлення']]
     return await generic_reply(update, 'Оберіть корисну інформацію:', buttons, USEFUL_INFO, home_button=True,
                                back_button=True)
 
 
 async def academic_leave(update: Update, context: CallbackContext) -> int:
+    current_dir = Path(__file__).parent
+    file_path = current_dir / '..' / 'utils' / 'files' / 'ЗАЯВА-Академ-відпустка-ЗРАЗОК.docx'
+    file_path = file_path.resolve()
+
     return await generic_reply(update,
-                               'Академічна відпустка: [посилання](https://www.ukma.edu.ua/index.php/about-us/sogodennya/dokumenty-naukma/doc_download/3435-polozhennia-pro-vidrakhuvannia-perevedennia-nadannia-akademichnoi-vidpustky-studentam-v-naukma).',
-                               [], ACADEMIC_LEAVE, back_button=True,
-                               home_button=True, parse_mode=ParseMode.MARKDOWN)
+                               """Строк академічної відпустки – до одного року.
+
+Причинами для академічної відпустки можуть бути – стан здоров’я, сімейні обставини, навчання за кордоном в іншому навчальному закладі.
+
+Всі причини мають мати підтверджуючі документи.
+
+Під час академічної відпустки стипендію студент не отримує.
+
+Для оформлення академічної відпустки студент направляє в деканат (спеціалісти деканату) заяву та супровідні документи (шаблон заяви в прикріпленому файлі)""",
+                               [], file_path=file_path, state=ACADEMIC_LEAVE, back_button=True,
+                               home_button=True, back_home_row=True)
 
 
 async def exclusion(update: Update, context: CallbackContext) -> int:
@@ -217,7 +229,6 @@ learning_process_handler = ConversationHandler(
             MessageHandler(filters.Regex('Академічна відпустка'), academic_leave),
             MessageHandler(filters.Regex('Відрахування'), exclusion),
             MessageHandler(filters.Regex('Поновлення'), renewal),
-            MessageHandler(filters.Regex('Зразки популярних заяв'), popular_statements),
             MessageHandler(filters.Regex(BACK), go_home),
         ],
 
