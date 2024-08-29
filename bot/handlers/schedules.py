@@ -32,7 +32,7 @@ async def exam_schedule(update: Update, context: CallbackContext) -> int:
 
 # Conversation Handler
 schedules_handler = ConversationHandler(
-    entry_points=[MessageHandler(filters.Regex('Рокзлад'), schedules)],
+    entry_points=[MessageHandler(filters.Regex('Розклад'), schedules)],
     states={
         SCHEDULES: [
             MessageHandler(filters.Regex('Розклад занять'), class_schedule),
