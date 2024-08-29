@@ -151,7 +151,7 @@ async def exclusion(update: Update, context: CallbackContext) -> int:
 
 async def renewal(update: Update, context: CallbackContext) -> int:
     current_dir = Path(__file__).parent
-    file_path = current_dir / '..' / 'utils' / 'files' / 'ЗАЯВА-відрахування-ЗРАЗОК.docx'
+    file_path = current_dir / '..' / 'utils' / 'files' / 'ЗАЯВА-поновлення для захисту диплома ЗРАЗОК.docx'
     file_path = file_path.resolve()
     return await generic_reply(update,
                                """- оформлення слухачем, на підставі написання заяви в деканаті ФЕН (шаблон заяви в прикріпленому файлі)
@@ -161,7 +161,7 @@ async def renewal(update: Update, context: CallbackContext) -> int:
 - переслуховування дисциплін та отримання за ними позитивних оцінок
 
 - поновлення в якості студента НаУКМА і продовження навчання""",
-                               [], RENEWAL, back_button=True, home_button=True, back_home_row=True)
+                               [], RENEWAL, file_path=file_path, back_button=True, home_button=True, back_home_row=True)
 
 
 async def popular_statements(update: Update, context: CallbackContext) -> int:
