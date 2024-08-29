@@ -1,7 +1,8 @@
 import asyncio
 import logging
 import os
-
+import threading
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 
 from telegram import Update
 from telegram.ext import Application, CallbackQueryHandler, PicklePersistence, CommandHandler
@@ -14,7 +15,7 @@ from bot.handlers.operator_chat import clear_pending_replies, operator_chat_hand
 from bot.handlers.start import start_handler
 from bot.handlers.study_process import learning_process_handler
 from bot.handlers.usefull_links import useful_links_handler
-from bot.utils.config import load_env, chat_id
+from bot.utils.config import load_env, chat_id, run_healthcheck_server
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -41,4 +42,8 @@ if __name__ == '__main__':
     application.add_handler(start_handler)
     application.add_handler(reply_handler)
 
+    threading.Thread(target=run_healthcheck_server, daemon=True).start()
     application.run_polling(allowed_updates=Update.ALL_TYPES)
+
+
+

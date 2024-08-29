@@ -1,4 +1,5 @@
 import logging
+from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -21,3 +22,8 @@ logger = logging.getLogger(__name__)
 async def chat_id(update: Update, context: CallbackContext):
     chat_id = update.effective_chat.id
     await context.bot.send_message(chat_id=chat_id, text=f"Chat ID: {chat_id}")
+
+def run_healthcheck_server():
+    server_address = ('/', 8000)
+    httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
+    httpd.serve_forever()
