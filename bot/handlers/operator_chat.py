@@ -44,57 +44,71 @@ async def send_to_operator(update: Update, context: CallbackContext) -> int:
     support_chat_id = os.getenv('TELEGRAM_SUPPORT_CHAT_ID')
     user = update.message.from_user
     user_id = user.id
-    if user_id not in user_nicknames:
-        user_nicknames[user_id] = f'User_{nickname_counter}' + '\n'
-        nickname_counter += 1
-    username = user_nicknames[user_id]
+
+    if user.username:
+        username = f'@{user.username}'
+    else:
+        if user_id not in user_nicknames:
+            user_nicknames[user_id] = f'User_{nickname_counter}'
+            nickname_counter += 1
+        username = user_nicknames[user_id]
 
     caption = f'{username}'
 
     message: Message = update.message
     message_caption = message.caption if message.caption is not None else ""
 
+    button = InlineKeyboardButton(text='Не вибрано', callback_data='not_pressed')
+    reply_markup = InlineKeyboardMarkup([[button]])
+
     sent_message = None
     if message.text is not None:
-        sent_message = await context.bot.send_message(chat_id=support_chat_id, text=f'{caption}\n{message.text}')
+        sent_message = await context.bot.send_message(chat_id=support_chat_id, text=f'{caption}\n{message.text}',
+                                                      reply_markup=reply_markup)
         pending_replies[sent_message.message_id] = {'chat_id': update.effective_chat.id, 'text': sent_message.text}
     elif message.photo is not None and len(message.photo) > 0:
         sent_message = await context.bot.send_photo(chat_id=support_chat_id, photo=message.photo[-1].file_id,
-                                                    caption=f'{caption}\n{message_caption}')
+                                                    caption=f'{caption}\n{message_caption}', reply_markup=reply_markup)
         pending_replies[sent_message.message_id] = {'chat_id': update.effective_chat.id, 'caption': sent_message.caption}
     elif message.animation:
         sent_message = await context.bot.send_animation(chat_id=support_chat_id, animation=message.animation.file_id,
-                                                        caption=f'{caption}\n')
+                                                        caption=f'{caption}\n', reply_markup=reply_markup)
         pending_replies[sent_message.message_id] = {'chat_id': update.effective_chat.id, 'caption': sent_message.caption}
     elif message.sticker:
         sticker = await context.bot.send_message(chat_id=support_chat_id, text=caption)
-        sent_message = await context.bot.send_sticker(chat_id=support_chat_id, sticker=message.sticker.file_id)
+        sent_message = await context.bot.send_sticker(chat_id=support_chat_id, sticker=message.sticker.file_id,
+                                                      reply_markup=reply_markup)
         pending_replies[sent_message.message_id] = {'chat_id': update.effective_chat.id}
         pending_replies[sticker.message_id] = {'chat_id': update.effective_chat.id, 'text': sticker.text}
     elif message.voice:
-        sent_message = await context.bot.send_voice(chat_id=support_chat_id, voice=message.voice.file_id, caption=caption)
+        sent_message = await context.bot.send_voice(chat_id=support_chat_id, voice=message.voice.file_id, caption=caption,
+                                                    reply_markup=reply_markup)
         pending_replies[sent_message.message_id] = {'chat_id': update.effective_chat.id, 'caption': caption}
     elif message.video:
-        sent_message = await context.bot.send_video(chat_id=support_chat_id, video=message.video.file_id, caption=caption)
+        sent_message = await context.bot.send_video(chat_id=support_chat_id, video=message.video.file_id, caption=caption,
+                                                    reply_markup=reply_markup)
         pending_replies[sent_message.message_id] = {'chat_id': update.effective_chat.id, 'caption': caption}
     elif message.location:
         location = await context.bot.send_message(chat_id=support_chat_id, text=caption)
         sent_message = await context.bot.send_location(chat_id=support_chat_id, latitude=message.location.latitude,
-                                                       longitude=message.location.longitude)
+                                                       longitude=message.location.longitude,
+                                                       reply_markup=reply_markup)
         pending_replies[location.message_id] = {'chat_id': update.effective_chat.id, 'text': location.text}
         pending_replies[sent_message.message_id] = {'chat_id': update.effective_chat.id}
     elif message.video_note:
         video = await context.bot.send_message(chat_id=support_chat_id, text=caption)
-        sent_message = await context.bot.send_video_note(chat_id=support_chat_id, video_note=message.video_note,)
+        sent_message = await context.bot.send_video_note(chat_id=support_chat_id, video_note=message.video_note,
+                                                         reply_markup=reply_markup)
         pending_replies[sent_message.message_id] = {'chat_id': update.effective_chat.id}
         pending_replies[video.message_id] = {'chat_id': update.effective_chat.id, 'text': video.text}
 
     elif message.document:
         sent_message = await context.bot.send_document(chat_id=support_chat_id, document=message.document.file_id,
-                                                       caption=f'{caption}\n{message_caption}')
+                                                       caption=f'{caption}\n{message_caption}', reply_markup=reply_markup)
         pending_replies[sent_message.message_id] = {'chat_id': update.effective_chat.id, 'caption': sent_message.caption}
 
     return IN_CONVERSATION
+
 
 
 
